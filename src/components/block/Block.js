@@ -1,10 +1,26 @@
 const Block = () => {
   return (
-    <div className="block w-500 box-1 padding-5">
-      <div className=" box-1 flex w-100p">
-        <div className="br-1 center pa-v-2 pa-h-5 inline-block">DATA</div>
-
-        <input placeholder="Enter Data" className="f-m fg-1 pa-h-4"></input>
+    <div className="box-1 box-hover br-2 padding-5 center w-fit-content mv-5">
+      <div className="box-1-gray flex">
+        <div className="br-1-gray ta-center pa-v-2 pa-h-5 inline-block bg-lg">
+          DATA
+        </div>
+        <input placeholder="Enter Data" className="f-m fg-4 pa-h-4"></input>
+      </div>
+      <div className="flex pa-t-5 pa-b-2 f-s">
+        <div className="pa-r-5">PREVIOUS HASH</div>
+        <div className="fc-g">0</div>
+      </div>
+      <div className="flex  pa-b-5 pa-t-2 f-s">
+        <div className="pa-r-5">HASH</div>
+        <div className="fc-g">
+          0001805de64a4bc3c250a7f642fd7c360fb7881be2917a9eea60858e54b66629
+        </div>
+      </div>
+      <div className="flex f-l pa-v-2 flex-baseline">
+        <div className="mr-2">GENESIS BLOCK </div>
+        <div className="f-s"> on date</div>
+        <div className="ml-a">1024</div>
       </div>
     </div>
   );
