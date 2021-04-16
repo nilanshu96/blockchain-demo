@@ -1,3 +1,98 @@
 .App {
   text-align: center;
 }
+
+/* Display */
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.inline {
+  display: inline;
+}
+
+.flex {
+  display: flex;
+}
+
+/* flex properties */
+
+.fg-1 {
+  flex-grow: 1;
+}
+
+/* border */
+
+.box-1 {
+  border: 1px solid black;
+}
+
+.br-1 {
+  border-right: 1px solid black;
+}
+
+/* text alignment properties */
+
+.center {
+  text-align: center;
+}
+
+/* padding */
+
+.padding-2 {
+  padding: 0.2em;
+}
+
+.padding-5 {
+  padding: 1.5em;
+}
+
+.pa-h-5 {
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+.pa-h-4 {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.pa-v-2 {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+/* dimensions */
+
+.w-500 {
+  width: 500px;
+}
+
+.w-100p {
+  width: 100%;
+}
+
+/* font */
+
+.f-m {
+  font-size: medium;
+}
+
+/* css for elements */
+
+input:focus,
+textarea:focus,
+input,
+textarea {
+  outline: none;
+  border: none;
+}
+
+input:focus {
+  box-shadow: 0px 0px 8px blue;
+}
