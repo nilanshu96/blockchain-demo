@@ -1,4 +1,6 @@
-const Block = () => {
+const Block = ({ isValid }) => {
+  let hashColor = "fc-g";
+  if (!isValid) hashColor = "fc-r";
   return (
     <div className="box-1 box-hover br-2 padding-5  w-fit-content mv-5">
       <div className="box-1-gray flex">
@@ -9,11 +11,11 @@ const Block = () => {
       </div>
       <div className="flex pa-t-5 pa-b-2 fs-s-8">
         <div className="pa-r-5">PREVIOUS HASH</div>
-        <div className="fc-g">0</div>
+        <div className={hashColor}>0</div>
       </div>
       <div className="flex  pa-b-5 pa-t-2 fs-s-8">
         <div className="pa-r-5">HASH</div>
-        <div className="fc-g">
+        <div className={hashColor}>
           0001805de64a4bc3c250a7f642fd7c360fb7881be2917a9eea60858e54b66629
         </div>
       </div>
