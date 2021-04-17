@@ -34,6 +34,14 @@
   align-items: baseline;
 }
 
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-align-center {
+  align-items: center;
+}
+
 /* border */
 
 .box-1 {
@@ -113,9 +121,17 @@
   margin: 1.5rem;
 }
 
+.ma-2 {
+  margin: 0.25rem;
+}
+
 .mv-5 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.mt-5 {
+  margin-top: 1.5rem;
 }
 
 .center {
@@ -157,6 +173,26 @@
 
 .f-l {
   font-size: large;
+}
+
+.fs-1 {
+  font-size: 1rem;
+}
+
+.fs-s-5 {
+  font-size: 0.5rem;
+}
+
+.fs-s-7 {
+  font-size: 0.7rem;
+}
+
+.fs-s-8 {
+  font-size: 0.8rem;
+}
+
+.fs-l-5 {
+  font-size: 1.5rem;
 }
 
 .fc-g {
