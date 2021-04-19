@@ -9,6 +9,23 @@ import AddDataButton from "./components/add-data-button/AddDataButton";
 function App() {
   const [blocks, setBlocks] = useState([]);
 
+  const addNewBlock = (data) => {
+    fetch("http://localhost:3001/generateBlock", {
+      method: "post",
+      body: JSON.stringify({
+        data: String(data),
+        prevHash: blocks[blocks.length - 1].hash,
+        prevIdx: blocks.length - 1,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((resp) => resp.json())
+      .then((block) => setBlocks((currState) => [...currState, block]))
+      .catch(console.log);
+  };
+
   useEffect(() => {
     fetch("http://localhost:3001/generateBlock", {
       method: "post",
@@ -45,7 +62,7 @@ function App() {
   return (
     <div className="flex flex-column flex-align-center">
       <BlockChain>{blockViews}</BlockChain>
-      <AddDataButton />
+      <AddDataButton addNewBlock={addNewBlock} />
     </div>
   );
 }
