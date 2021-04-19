@@ -43,12 +43,6 @@ function App() {
       .catch(console.log);
   }, []);
 
-  // const blockViews = [
-  //   <Block isValid={true} />,
-  //   <Block isValid={true} />,
-  //   <Block isValid={false} />,
-  // ];
-
   if (blocks.length === 0) {
     return <div>Loading</div>;
   }
