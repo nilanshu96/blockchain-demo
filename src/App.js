@@ -60,9 +60,12 @@ function App() {
   });
 
   return (
-    <div className="flex flex-column flex-align-center">
-      <BlockChain>{blockViews}</BlockChain>
-      <AddDataButton addNewBlock={addNewBlock} />
+    <div>
+      <h1 className="ta-center">SIMPLE CHAIN</h1>
+      <div className="flex flex-column flex-align-center">
+        <BlockChain>{blockViews}</BlockChain>
+        <AddDataButton addNewBlock={addNewBlock} />
+      </div>
     </div>
   );
 }

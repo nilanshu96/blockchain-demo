@@ -211,6 +211,10 @@
   color: red;
 }
 
+.no-text-wrap {
+  white-space: nowrap;
+}
+
 /* background colors */
 
 .bg-lg {
