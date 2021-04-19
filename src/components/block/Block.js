@@ -1,4 +1,6 @@
-const Block = ({ isValid }) => {
+const Block = ({ block }) => {
+  const { data, idx, prevHash, hash, nonce, isValid, createdAt } = block;
+
   let hashColor = "fc-g";
   if (!isValid) hashColor = "fc-r";
   return (
@@ -7,22 +9,26 @@ const Block = ({ isValid }) => {
         <div className="br-1-gray ta-center pa-v-2 pa-h-5 inline-block bg-lg">
           DATA
         </div>
-        <input placeholder="Enter Data" className="fg-4 pa-h-4"></input>
+        <input
+          placeholder="Enter Data"
+          className="fg-4 pa-h-4"
+          defaultValue={data}
+        ></input>
       </div>
       <div className="flex pa-t-5 pa-b-2 fs-s-8">
         <div className="pa-r-5">PREVIOUS HASH</div>
-        <div className={hashColor}>0</div>
+        <div className={hashColor}>{prevHash}</div>
       </div>
       <div className="flex  pa-b-5 pa-t-2 fs-s-8">
         <div className="pa-r-5">HASH</div>
-        <div className={hashColor}>
-          0001805de64a4bc3c250a7f642fd7c360fb7881be2917a9eea60858e54b66629
-        </div>
+        <div className={hashColor}>{hash}</div>
       </div>
       <div className="flex fs-l-5 pa-v-2 flex-baseline">
-        <div className="mr-2">GENESIS BLOCK </div>
-        <div className="fs-s-8"> on date</div>
-        <div className="ml-a">1024</div>
+        <div className="mr-2">
+          {idx === 0 ? "GENESIS BLOCK" : "BLOCK #" + idx}{" "}
+        </div>
+        <div className="fs-s-8"> {createdAt}</div>
+        <div className="ml-a">{nonce}</div>
       </div>
     </div>
   );
