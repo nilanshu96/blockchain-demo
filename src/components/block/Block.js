@@ -1,10 +1,12 @@
+import "./Block.css";
+
 const Block = ({ block }) => {
   const { data, idx, prevHash, hash, nonce, isValid, createdAt } = block;
 
   let hashColor = "fc-g";
   if (!isValid) hashColor = "fc-r";
   return (
-    <div className="box-1 box-hover br-2 padding-5  w-fit-content mv-5">
+    <div className="box-1 box-hover br-2 padding-5 block-width mv-5">
       <div className="box-1-gray flex">
         <div className="br-1-gray ta-center pa-v-2 pa-h-5 inline-block bg-lg">
           DATA
@@ -16,11 +18,11 @@ const Block = ({ block }) => {
         ></input>
       </div>
       <div className="flex pa-t-5 pa-b-2 fs-s-8">
-        <div className="pa-r-5">PREVIOUS HASH</div>
+        <div className="pa-r-4">PREVIOUS HASH</div>
         <div className={hashColor}>{prevHash}</div>
       </div>
       <div className="flex  pa-b-5 pa-t-2 fs-s-8">
-        <div className="pa-r-5">HASH</div>
+        <div className="pa-r-4">HASH</div>
         <div className={hashColor}>{hash}</div>
       </div>
       <div className="flex fs-l-5 pa-v-2 flex-baseline">

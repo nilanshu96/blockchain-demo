@@ -12,7 +12,7 @@ const BlockChain = ({ children }) => {
     Children.forEach(children, (child, i) => {
       blocks.push(child);
       if (i < childrenCount - 1) {
-        blocks.push(<DownwardArrow />);
+        blocks.push(<DownwardArrow key={i} />);
       }
     });
   }
