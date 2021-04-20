@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
@@ -8,6 +8,7 @@ import AddDataButton from "./components/add-data-button/AddDataButton";
 
 function App() {
   const [blocks, setBlocks] = useState([]);
+  const blockViews = useRef([]);
 
   const addNewBlock = (data) => {
     fetch("http://localhost:3001/generateValidBlock", {
@@ -22,7 +23,10 @@ function App() {
       },
     })
       .then((resp) => resp.json())
-      .then((block) => setBlocks((currState) => [...currState, block]))
+      .then((block) => {
+        blockViews.current.push(<Block block={block} key={block.hash} />);
+        setBlocks((currState) => [...currState, block]);
+      })
       .catch(console.log);
   };
 
@@ -39,7 +43,10 @@ function App() {
       },
     })
       .then((resp) => resp.json())
-      .then((block) => setBlocks([block]))
+      .then((block) => {
+        blockViews.current.push(<Block block={block} key={block.hash} />);
+        setBlocks([block]);
+      })
       .catch(console.log);
   }, []);
 
@@ -47,17 +54,17 @@ function App() {
     return <div>Loading</div>;
   }
 
-  let blockViews = [];
+  // let blockViews = [];
 
-  blocks.forEach((block) => {
-    blockViews.push(<Block block={block} key={block.hash} />);
-  });
+  // blocks.forEach((block) => {
+  //   blockViews.push(<Block block={block} key={block.hash} />);
+  // });
 
   return (
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
       <div className="flex flex-column flex-align-center">
-        <BlockChain>{blockViews}</BlockChain>
+        <BlockChain>{blockViews.current}</BlockChain>
         <AddDataButton addNewBlock={addNewBlock} />
       </div>
     </div>

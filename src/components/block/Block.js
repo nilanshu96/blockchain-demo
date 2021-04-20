@@ -1,6 +1,6 @@
 import "./Block.css";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, memo } from "react";
 
 const Block = ({ block }) => {
   const [data, setData] = useState(block.data);
@@ -82,4 +82,4 @@ const Block = ({ block }) => {
   );
 };
 
-export default Block;
+export default memo(Block);
