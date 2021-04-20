@@ -10,7 +10,7 @@ function App() {
   const [blocks, setBlocks] = useState([]);
 
   const addNewBlock = (data) => {
-    fetch("http://localhost:3001/generateBlock", {
+    fetch("http://localhost:3001/generateValidBlock", {
       method: "post",
       body: JSON.stringify({
         data: String(data),
@@ -27,11 +27,11 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3001/generateBlock", {
+    fetch("http://localhost:3001/generateValidBlock", {
       method: "post",
       body: JSON.stringify({
         data: "Welcome to SimpleChain!",
-        prevHash: 0,
+        prevHash: "0",
         prevIdx: -1,
       }),
       headers: {

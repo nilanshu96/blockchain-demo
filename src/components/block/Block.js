@@ -1,7 +1,51 @@
 import "./Block.css";
 
+import { useState, useCallback, useEffect, useRef } from "react";
+
 const Block = ({ block }) => {
-  const { data, idx, prevHash, hash, nonce, isValid, createdAt } = block;
+  const [data, setData] = useState(block.data);
+  const [idx, setIdx] = useState(block.idx);
+  const [prevHash, setPrevHash] = useState(block.prevHash);
+  const [hash, setHash] = useState(block.hash);
+  const [nonce, setNonce] = useState(block.nonce);
+  const [isValid, setIsValid] = useState(block.isValid);
+  const [createdAt, setCreatedAt] = useState(block.createdAt);
+
+  const firstLoad = useRef(true);
+
+  const updateBlock = useCallback((newBlock) => {
+    console.log("updateBlock called");
+
+    setIdx(newBlock.idx);
+    setPrevHash(newBlock.prevHash);
+    setHash(newBlock.hash);
+    setNonce(newBlock.nonce);
+    setIsValid(newBlock.isValid);
+    setCreatedAt(newBlock.createdAt);
+  }, []);
+
+  const onDataChange = (event) => {
+    setData(event.target.value);
+  };
+
+  useEffect(() => {
+    if (!firstLoad.current) {
+      fetch("http://localhost:3001/generateBlock", {
+        method: "post",
+        body: JSON.stringify({ ...block, data: data }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => resp.json())
+        .then(updateBlock)
+        .catch(console.log);
+    }
+  }, [data, block, updateBlock]);
+
+  useEffect(() => {
+    firstLoad.current = false;
+  }, []);
 
   let hashColor = "fc-g";
   if (!isValid) hashColor = "fc-r";
@@ -15,7 +59,8 @@ const Block = ({ block }) => {
         <input
           placeholder="Enter Data"
           className="fg-4 pa-h-4"
-          defaultValue={data}
+          value={data}
+          onChange={onDataChange}
         ></input>
       </div>
       <div className="flex pa-t-5 pa-b-2 fs-s-8">
