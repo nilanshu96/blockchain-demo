@@ -65,12 +65,6 @@ function App() {
     return <div>Loading</div>;
   }
 
-  // let blockViews = [];
-
-  // blocks.forEach((block) => {
-  //   blockViews.push(<Block block={block} key={block.hash} />);
-  // });
-
   return (
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
