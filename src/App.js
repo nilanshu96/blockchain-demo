@@ -1,6 +1,7 @@
 import "./App.css";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
@@ -8,7 +9,17 @@ import AddDataButton from "./components/add-data-button/AddDataButton";
 
 function App() {
   const [blocks, setBlocks] = useState([]);
-  const blockViews = useRef([]);
+
+  const updateNextBlock = useCallback((id) => {
+    setBlocks((currBlocks) => {
+      if (id + 1 < currBlocks.length) {
+        currBlocks[id + 1].prevHash = currBlocks[id].hash;
+        currBlocks[id + 1].key = uuidv4();
+        return [...currBlocks];
+      }
+      return currBlocks;
+    });
+  }, []);
 
   const addNewBlock = (data) => {
     fetch("http://localhost:3001/generateValidBlock", {
@@ -24,7 +35,7 @@ function App() {
     })
       .then((resp) => resp.json())
       .then((block) => {
-        blockViews.current.push(<Block block={block} key={block.hash} />);
+        block.key = uuidv4(); //a change in key triggers the update in the component to which it belongs
         setBlocks((currState) => [...currState, block]);
       })
       .catch(console.log);
@@ -44,7 +55,7 @@ function App() {
     })
       .then((resp) => resp.json())
       .then((block) => {
-        blockViews.current.push(<Block block={block} key={block.hash} />);
+        block.key = uuidv4();
         setBlocks([block]);
       })
       .catch(console.log);
@@ -64,7 +75,18 @@ function App() {
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
       <div className="flex flex-column flex-align-center">
-        <BlockChain>{blockViews.current}</BlockChain>
+        <BlockChain>
+          {blocks.map((block) => {
+            console.log(block.key);
+            return (
+              <Block
+                block={block}
+                key={block.key}
+                updateNextBlock={updateNextBlock}
+              />
+            );
+          })}
+        </BlockChain>
         <AddDataButton addNewBlock={addNewBlock} />
       </div>
     </div>

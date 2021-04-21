@@ -1,8 +1,8 @@
 import "./Block.css";
 
-import { useState, useCallback, useEffect, useRef, memo } from "react";
+import { useState, useCallback, useEffect, memo } from "react";
 
-const Block = ({ block }) => {
+const Block = ({ block, updateNextBlock }) => {
   const [data, setData] = useState(block.data);
   const [idx, setIdx] = useState(block.idx);
   const [prevHash, setPrevHash] = useState(block.prevHash);
@@ -11,41 +11,40 @@ const Block = ({ block }) => {
   const [isValid, setIsValid] = useState(block.isValid);
   const [createdAt, setCreatedAt] = useState(block.createdAt);
 
-  const firstLoad = useRef(true);
+  const updateBlock = useCallback(
+    (newBlock) => {
+      console.log("updateBlock called");
 
-  const updateBlock = useCallback((newBlock) => {
-    console.log("updateBlock called");
-
-    setIdx(newBlock.idx);
-    setPrevHash(newBlock.prevHash);
-    setHash(newBlock.hash);
-    setNonce(newBlock.nonce);
-    setIsValid(newBlock.isValid);
-    setCreatedAt(newBlock.createdAt);
-  }, []);
+      setIdx(newBlock.idx);
+      setPrevHash(newBlock.prevHash);
+      setHash(newBlock.hash);
+      setNonce(newBlock.nonce);
+      setIsValid(newBlock.isValid);
+      setCreatedAt(newBlock.createdAt);
+      updateNextBlock(newBlock.idx);
+    },
+    [updateNextBlock]
+  );
 
   const onDataChange = (event) => {
     setData(event.target.value);
   };
 
   useEffect(() => {
-    if (!firstLoad.current) {
-      fetch("http://localhost:3001/generateBlock", {
-        method: "post",
-        body: JSON.stringify({ ...block, data: data }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+    fetch("http://localhost:3001/generateBlock", {
+      method: "post",
+      body: JSON.stringify({ ...block, data: data }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((resp) => resp.json())
+      .then((newBlock) => {
+        Object.assign(block, newBlock);
+        updateBlock(newBlock);
       })
-        .then((resp) => resp.json())
-        .then(updateBlock)
-        .catch(console.log);
-    }
+      .catch(console.log);
   }, [data, block, updateBlock]);
-
-  useEffect(() => {
-    firstLoad.current = false;
-  }, []);
 
   let hashColor = "fc-g";
   if (!isValid) hashColor = "fc-r";
