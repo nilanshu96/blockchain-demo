@@ -40,6 +40,8 @@ const Block = ({ block, updateNextBlock }) => {
     })
       .then((resp) => resp.json())
       .then((newBlock) => {
+        //mutating the block which comes from the App's blocks array as using setBlocks from App.js will cause a re-render.
+        //All the blocks will later get updated by the updateNextBlock call
         Object.assign(block, newBlock);
         updateBlock(newBlock);
       })
