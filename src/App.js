@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
 import AddDataButton from "./components/add-data-button/AddDataButton";
+import Avatar from "./components/avatar/Avatar";
 
 function App() {
   const [blocks, setBlocks] = useState([]);
@@ -68,6 +69,10 @@ function App() {
   return (
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
+      <div className="flex pa-h-5">
+        <Avatar />
+        <Avatar />
+      </div>
       <div className="flex flex-column flex-align-center">
         <BlockChain>
           {blocks.map((block) => {

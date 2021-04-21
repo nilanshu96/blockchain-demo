@@ -1,6 +1,6 @@
 import "./Block.css";
 
-import { useState, useCallback, useEffect, memo } from "react";
+import { useState, useCallback, useEffect, memo, useRef } from "react";
 
 const Block = ({ block, updateNextBlock }) => {
   const [data, setData] = useState(block.data);
@@ -10,6 +10,8 @@ const Block = ({ block, updateNextBlock }) => {
   const [nonce, setNonce] = useState(block.nonce);
   const [isValid, setIsValid] = useState(block.isValid);
   const [createdAt, setCreatedAt] = useState(block.createdAt);
+
+  const isCurrent = useRef(true);
 
   const updateBlock = useCallback(
     (newBlock) => {
@@ -31,6 +33,13 @@ const Block = ({ block, updateNextBlock }) => {
   };
 
   useEffect(() => {
+    return () => {
+      //to prevent memory leaks
+      isCurrent.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     fetch("http://localhost:3001/generateBlock", {
       method: "post",
       body: JSON.stringify({ ...block, data: data }),
@@ -42,8 +51,10 @@ const Block = ({ block, updateNextBlock }) => {
       .then((newBlock) => {
         //mutating the block which comes from the App's blocks array as using setBlocks from App.js will cause a re-render.
         //All the blocks will later get updated by the updateNextBlock call
-        Object.assign(block, newBlock);
-        updateBlock(newBlock);
+        if (isCurrent.current) {
+          Object.assign(block, newBlock);
+          updateBlock(newBlock);
+        }
       })
       .catch(console.log);
   }, [data, block, updateBlock]);
