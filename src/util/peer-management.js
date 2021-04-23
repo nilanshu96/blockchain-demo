@@ -1,8 +1,10 @@
+import { verifyBlockChain } from "./blockchain-util";
+
 const RECEIVE = "receive";
 const UPDATE = "update";
 const FAILED = "failed";
 
-let masterPeer = null;
+let masterPeer = {};
 
 const init = (blocks) => {
   masterPeer.peer = new RTCPeerConnection();
@@ -13,15 +15,24 @@ const init = (blocks) => {
   masterPeer.blocks = blocks;
 
   masterPeer.channel.onmessage = (event) => {
-    if (event.data.message === RECEIVE) {
-      masterPeer.channel.send({
-        message: RECEIVE,
-        blocks: JSON.stringify(masterPeer.blocks),
-      });
+    const receivedData = JSON.parse(event.data);
+
+    if (receivedData.message === RECEIVE) {
+      masterPeer.channel.send(
+        JSON.stringify({
+          message: RECEIVE,
+          blocks: masterPeer.blocks,
+        })
+      );
     }
 
-    if (event.data.message === UPDATE) {
-      //check the blocks validity here
+    if (receivedData.message === UPDATE) {
+      const updatedBlocks = receivedData.blocks;
+      if (verifyBlockChain(updatedBlocks)) {
+        masterPeer.blocks = updatedBlocks;
+      } else {
+        masterPeer.channel.send(JSON.stringify({ message: FAILED }));
+      }
     }
   };
   console.log("init called");
@@ -36,9 +47,11 @@ const createPeer = () => {
   });
 
   channel.onmessage = (event) => {
-    if (event.data.message === RECEIVE) {
-      peerObject.blocks = event.data.blocks;
-    } else if (event.data.message === FAILED) {
+    const receivedData = JSON.parse(event.data);
+
+    if (receivedData.message === RECEIVE) {
+      peerObject.blocks = receivedData.blocks;
+    } else if (receivedData.message === FAILED) {
       peerObject.updateFailed = true;
     }
   };
@@ -47,10 +60,12 @@ const createPeer = () => {
   peerObject.channel = channel;
   peerObject.blocks = [];
   peerObject.getBlocks = () => {
-    peerObject.channel.send({ message: RECEIVE });
+    peerObject.channel.send(JSON.stringify({ message: RECEIVE }));
   };
   peerObject.updateBlocks = () => {
-    peerObject.channel.send({ message: UPDATE, blocks: peerObject.blocks });
+    peerObject.channel.send(
+      JSON.stringify({ message: UPDATE, blocks: peerObject.blocks })
+    );
   };
   peerObject.updateFailed = false;
 
