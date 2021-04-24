@@ -3,7 +3,7 @@ import "./App.css";
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { peersInit } from "./util/peer-management";
+import { peersInit, addPeer } from "./util/peer-management";
 
 import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
@@ -12,6 +12,7 @@ import Avatar from "./components/avatar/Avatar";
 
 function App() {
   const [blocks, setBlocks] = useState([]);
+  const [peers, setPeers] = useState([]);
 
   const updateNextBlock = useCallback((id) => {
     setBlocks((currBlocks) => {
@@ -62,7 +63,7 @@ function App() {
         return peersInit([block], setBlocks);
       })
       .then((peerObj) => {
-        //store the peerObj here
+        setPeers([peerObj]);
       })
       .catch(console.log);
   }, []);
@@ -78,6 +79,7 @@ function App() {
         <Avatar />
         <Avatar />
       </div>
+      <button onClick={() => addPeer(setPeers)}>Add Peer</button>
       <div className="flex flex-column flex-align-center">
         <BlockChain>
           {blocks.map((block) => {
