@@ -2,99 +2,95 @@ import { verifyBlockChain } from "./blockchain-util";
 
 const RECEIVE = "receive";
 const UPDATE = "update";
-const FAILED = "failed";
+const UPDATE_FAILED = "failed";
+const UPDATE_SUCCESSFUL = "success";
+const UPDATE_NOT_CALLED = "no update";
 
 let masterPeer = {};
 
-const init = (blocks) => {
-  masterPeer.peer = new RTCPeerConnection();
-  masterPeer.channel = masterPeer.peer.createDataChannel("blockchain", {
+const init = (blocks, setBlocks) => {
+  masterPeer.peers = [];
+  const peerObject1 = {};
+  peerObject1.blocks = blocks;
+  const peer1 = new RTCPeerConnection();
+  const channel1 = peer1.createDataChannel("blockchain", {
     negotiated: true,
     id: 0,
   });
-  masterPeer.blocks = blocks;
 
-  masterPeer.channel.onmessage = (event) => {
-    const receivedData = JSON.parse(event.data);
+  peerObject1.peer = peer1;
+  peerObject1.channel = channel1;
+  peerObject1.updateRequest = masterPeer.peers.push(peerObject1);
 
-    if (receivedData.message === RECEIVE) {
-      masterPeer.channel.send(
-        JSON.stringify({
-          message: RECEIVE,
-          blocks: masterPeer.blocks,
-        })
+  channel1.onmessage = (event) => {
+    const eventData = JSON.parse(event.data);
+
+    if (eventData.message === RECEIVE) {
+      channel1.send(
+        JSON.stringify({ message: RECEIVE, blocks: peerObject1.blocks })
       );
-    }
-
-    if (receivedData.message === UPDATE) {
-      const updatedBlocks = receivedData.blocks;
+    } else if (eventData.message === UPDATE) {
+      const updatedBlocks = eventData.blocks;
       if (verifyBlockChain(updatedBlocks)) {
-        masterPeer.blocks = updatedBlocks;
+        masterPeer.blocks = blocks;
+        channel1.send(JSON.stringify({ message: UPDATE_SUCCESSFUL }));
       } else {
-        masterPeer.channel.send(JSON.stringify({ message: FAILED }));
+        channel1.send(JSON.stringify({ message: UPDATE_FAILED }));
       }
     }
   };
-  console.log("init called");
-};
 
-const createPeer = () => {
-  const peerObject = {};
-  const peer = new RTCPeerConnection();
-  const channel = peer.createDataChannel("blockchain", {
+  const peerObject2 = {};
+  const peer2 = new RTCPeerConnection();
+  const channel2 = peer2.createDataChannel("blockchain", {
     negotiated: true,
     id: 0,
   });
+  channel2.onmessage = (event) => {
+    const eventData = JSON.parse(event.data);
 
-  channel.onmessage = (event) => {
-    const receivedData = JSON.parse(event.data);
-
-    if (receivedData.message === RECEIVE) {
-      peerObject.blocks = receivedData.blocks;
-    } else if (receivedData.message === FAILED) {
-      peerObject.updateFailed = true;
+    if (eventData.message === RECEIVE) {
+      peerObject2.loading = false;
+      peerObject2.blocks = eventData.blocks;
+      setBlocks(peerObject2.blocks);
     }
   };
 
-  peerObject.peer = peer;
-  peerObject.channel = channel;
-  peerObject.blocks = [];
-  peerObject.getBlocks = () => {
-    peerObject.channel.send(JSON.stringify({ message: RECEIVE }));
+  channel2.onopen = () => {
+    peerObject2.getBlocks();
   };
-  peerObject.updateBlocks = () => {
-    peerObject.channel.send(
-      JSON.stringify({ message: UPDATE, blocks: peerObject.blocks })
+
+  peerObject2.peer = peer2;
+  peerObject2.channel = channel2;
+  peerObject2.loading = false;
+
+  peerObject2.getBlocks = () => {
+    peerObject2.loading = true;
+    console.log("in getblocks");
+
+    channel2.send(JSON.stringify({ message: RECEIVE }));
+  };
+
+  peerObject2.updatedBlocks = () => {
+    channel2.send(
+      JSON.stringify({ message: UPDATE, blocks: peerObject2.blocks })
     );
   };
-  peerObject.updateFailed = false;
 
-  return peerObject;
-};
+  peerObject2.blocks = [];
 
-const addPeer = () => {
-  const peerObject = createPeer();
-  return connectPeers(masterPeer, peerObject)
-    .then(() => {
-      peerObject.getBlocks();
-      return peerObject;
-    })
-    .catch(console.log);
-};
-
-const connectPeers = (peerObject1, peerObject2) => {
-  const peer1 = peerObject1.peer;
-  const peer2 = peerObject2.peer;
-
-  peer1.onicecandidate = function (event) {
+  peer1.onicecandidate = (event) => {
     if (event.candidate) {
+      console.log("ice 1");
       peer2.addIceCandidate(event.candidate);
     }
   };
 
-  peer2.onicecandidate = function (event) {
+  peer2.onicecandidate = (event) => {
     if (event.candidate) {
+      console.log("ice 2");
       peer1.addIceCandidate(event.candidate);
+      console.log(channel2.readyState);
     }
   };
 
@@ -105,7 +101,10 @@ const connectPeers = (peerObject1, peerObject2) => {
     .then(() => peer2.createAnswer())
     .then((answer) => peer2.setLocalDescription(answer))
     .then(() => peer1.setRemoteDescription(peer2.localDescription))
+    .then(() => {
+      return peerObject2;
+    })
     .catch(console.log);
 };
 
-export { init as peersInit, addPeer };
+export { init as peersInit };

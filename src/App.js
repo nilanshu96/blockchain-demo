@@ -3,6 +3,8 @@ import "./App.css";
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import { peersInit } from "./util/peer-management";
+
 import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
 import AddDataButton from "./components/add-data-button/AddDataButton";
@@ -57,7 +59,10 @@ function App() {
       .then((resp) => resp.json())
       .then((block) => {
         block.key = uuidv4();
-        setBlocks([block]);
+        return peersInit([block], setBlocks);
+      })
+      .then((peerObj) => {
+        //store the peerObj here
       })
       .catch(console.log);
   }, []);
