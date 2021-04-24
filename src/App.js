@@ -76,8 +76,9 @@ function App() {
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
       <div className="flex pa-h-5">
-        <Avatar />
-        <Avatar />
+        {peers.map((peer, id) => (
+          <Avatar peer={peer} id={id} key={id} />
+        ))}
       </div>
       <button onClick={() => addPeer(setPeers)}>Add Peer</button>
       <div className="flex flex-column flex-align-center">
