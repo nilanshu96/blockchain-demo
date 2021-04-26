@@ -207,4 +207,36 @@ const addPeer = (setPeers) => {
     .catch(console.log);
 };
 
+const changePeers = (
+  currentPeerObj,
+  newPeerObj,
+  setCurrentPeer,
+  setBlocks,
+  setModal
+) => {
+  //currentPeerObject should teel the newPeerObj that updating has been successful. Here since it's in a single page, we aren't establishing
+  //another peer connection between currentPeerObj and newPeerObj. Establishing another peer connection would be required for a real blockchain
+  currentPeerObj.channel.onmessage = (event) => {
+    const eventData = JSON.parse(event.data);
+    if (eventData.message === UPDATE_SUCCESSFUL) {
+      newPeerObj.getBlocks();
+    } else if (eventData.message === UPDATE_FAILED) {
+      setModal(true);
+      setCurrentPeer(newPeerObj);
+    }
+  };
+
+  newPeerObj.channel.onmessage = (event) => {
+    const eventData = JSON.parse(event.data);
+
+    if (eventData.message === RECEIVE) {
+      newPeerObj.blocks = eventData.blocks;
+      setBlocks(newPeerObj.blocks);
+      setCurrentPeer(newPeerObj);
+    }
+  };
+
+  currentPeerObj.updatedBlocks();
+};
+
 export { init as peersInit, addPeer };
