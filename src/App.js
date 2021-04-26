@@ -9,10 +9,13 @@ import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
 import AddDataButton from "./components/add-data-button/AddDataButton";
 import Avatar from "./components/avatar/Avatar";
+import PopUp from "./components/popup/PopUp";
 
 function App() {
   const [blocks, setBlocks] = useState([]);
   const [peers, setPeers] = useState([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentPeer, setCurrentPeer] = useState(null);
 
   const updateNextBlock = useCallback((id) => {
     setBlocks((currBlocks) => {
@@ -64,6 +67,7 @@ function App() {
       })
       .then((peerObj) => {
         setPeers([peerObj]);
+        setCurrentPeer(peerObj);
       })
       .catch(console.log);
   }, []);
@@ -81,6 +85,8 @@ function App() {
         ))}
       </div>
       <button onClick={() => addPeer(setPeers)}>Add Peer</button>
+      <button onClick={() => setModalIsOpen(true)}>Open Modal</button>
+      <PopUp modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
       <div className="flex flex-column flex-align-center">
         <BlockChain>
           {blocks.map((block) => {

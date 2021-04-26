@@ -212,7 +212,7 @@ const changePeers = (
   newPeerObj,
   setCurrentPeer,
   setBlocks,
-  setModal
+  setModalIsOpen
 ) => {
   //currentPeerObject should teel the newPeerObj that updating has been successful. Here since it's in a single page, we aren't establishing
   //another peer connection between currentPeerObj and newPeerObj. Establishing another peer connection would be required for a real blockchain
@@ -221,8 +221,9 @@ const changePeers = (
     if (eventData.message === UPDATE_SUCCESSFUL) {
       newPeerObj.getBlocks();
     } else if (eventData.message === UPDATE_FAILED) {
-      setModal(true);
+      setBlocks(newPeerObj.blocks);
       setCurrentPeer(newPeerObj);
+      setModalIsOpen(true);
     }
   };
 
@@ -239,4 +240,4 @@ const changePeers = (
   currentPeerObj.updatedBlocks();
 };
 
-export { init as peersInit, addPeer };
+export { init as peersInit, addPeer, changePeers };
