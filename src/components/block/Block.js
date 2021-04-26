@@ -11,6 +11,10 @@ const Block = ({ block, updateNextBlock }) => {
   const [isValid, setIsValid] = useState(block.isValid);
   const [createdAt, setCreatedAt] = useState(block.createdAt);
 
+  const lastHash = useRef(hash);
+  const lastPrevHash = useRef(prevHash);
+  const lastCreatedAt = useRef(createdAt);
+
   const isCurrent = useRef(true);
 
   const updateBlock = useCallback(
@@ -52,6 +56,18 @@ const Block = ({ block, updateNextBlock }) => {
         //mutating the block which comes from the App's blocks array as using setBlocks from App.js will cause a re-render.
         //All the blocks will later get updated by the updateNextBlock call
         if (isCurrent.current) {
+          if (
+            newBlock.prevHash === lastPrevHash.current &&
+            newBlock.hash === lastHash.current
+          ) {
+            console.log("lastCreatedAt: " + lastCreatedAt.current);
+            console.log("current createdAT: " + newBlock.createdAt);
+            newBlock.createdAt = lastCreatedAt.current;
+          } else {
+            lastPrevHash.current = newBlock.prevHash;
+            lastHash.current = newBlock.hash;
+            lastCreatedAt.current = newBlock.createdAt;
+          }
           Object.assign(block, newBlock);
           updateBlock(newBlock);
         }

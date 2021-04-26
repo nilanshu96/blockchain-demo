@@ -3,7 +3,7 @@ import "./App.css";
 import { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { peersInit, addPeer } from "./util/peer-management";
+import { peersInit, addPeer, changePeers } from "./util/peer-management";
 
 import Block from "./components/block/Block";
 import BlockChain from "./components/blockchain/BlockChain";
@@ -17,12 +17,26 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentPeer, setCurrentPeer] = useState(null);
 
+  const changeCurrentPeer = (newPeer) => {
+    if (currentPeer !== newPeer) {
+      changePeers(
+        currentPeer,
+        newPeer,
+        setCurrentPeer,
+        setBlocks,
+        setModalIsOpen,
+        blocks
+      );
+    }
+  };
+
   const updateNextBlock = useCallback((id) => {
     setBlocks((currBlocks) => {
       if (id + 1 < currBlocks.length) {
         currBlocks[id + 1].prevHash = currBlocks[id].hash;
         currBlocks[id + 1].key = uuidv4();
-        return [...currBlocks];
+        const newBlocks = [...currBlocks];
+        return newBlocks;
       }
       return currBlocks;
     });
@@ -72,7 +86,7 @@ function App() {
       .catch(console.log);
   }, []);
 
-  if (blocks.length === 0) {
+  if (!blocks || blocks.length === 0) {
     return <div>Loading</div>;
   }
 
@@ -81,7 +95,7 @@ function App() {
       <h1 className="ta-center">SIMPLE CHAIN</h1>
       <div className="flex pa-h-5">
         {peers.map((peer, id) => (
-          <Avatar peer={peer} id={id} key={id} />
+          <Avatar peer={peer} key={id} changeCurrentPeer={changeCurrentPeer} />
         ))}
       </div>
       <button onClick={() => addPeer(setPeers)}>Add Peer</button>
@@ -90,7 +104,6 @@ function App() {
       <div className="flex flex-column flex-align-center">
         <BlockChain>
           {blocks.map((block) => {
-            console.log(block.key);
             return (
               <Block
                 block={block}

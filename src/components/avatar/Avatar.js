@@ -1,7 +1,13 @@
 import "./Avatar.css";
 
-const Avatar = () => {
-  return <div id="avatar" className="mh-5"></div>;
+const Avatar = ({ peer, changeCurrentPeer }) => {
+  return (
+    <div
+      id="avatar"
+      className="mh-5"
+      onClick={() => changeCurrentPeer(peer)}
+    ></div>
+  );
 };
 
 export default Avatar;

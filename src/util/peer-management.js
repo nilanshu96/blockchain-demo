@@ -1,4 +1,5 @@
 import { verifyBlockChain } from "./blockchain-util";
+import { v4 as uuidv4 } from "uuid";
 
 const RECEIVE = "receive";
 const UPDATE = "update";
@@ -8,10 +9,14 @@ const UPDATE_NOT_CALLED = "no update";
 
 let masterPeer = {};
 
+const getNewBlocks = (blocks) => {
+  return blocks.map((block) => ({ ...block, key: uuidv4() }));
+};
+
 const init = (blocks, setBlocks) => {
   masterPeer.peers = [];
   const peerObject1 = {};
-  peerObject1.blocks = blocks;
+  masterPeer.blocks = blocks;
   const peer1 = new RTCPeerConnection();
   const channel1 = peer1.createDataChannel("blockchain", {
     negotiated: true,
@@ -27,10 +32,12 @@ const init = (blocks, setBlocks) => {
 
     if (eventData.message === RECEIVE) {
       channel1.send(
-        JSON.stringify({ message: RECEIVE, blocks: peerObject1.blocks })
+        JSON.stringify({ message: RECEIVE, blocks: masterPeer.blocks })
       );
     } else if (eventData.message === UPDATE) {
       const updatedBlocks = eventData.blocks;
+      console.log("received updated blocks:");
+      console.log(updatedBlocks);
       if (verifyBlockChain(updatedBlocks)) {
         masterPeer.blocks = updatedBlocks;
         channel1.send(JSON.stringify({ message: UPDATE_SUCCESSFUL }));
@@ -52,7 +59,7 @@ const init = (blocks, setBlocks) => {
 
     if (eventData.message === RECEIVE) {
       peerObject2.loading = false;
-      peerObject2.blocks = eventData.blocks;
+      peerObject2.blocks = getNewBlocks(eventData.blocks);
       setBlocks(peerObject2.blocks);
     }
   };
@@ -124,8 +131,10 @@ const addPeer = (setPeers) => {
     const eventData = JSON.parse(event.data);
 
     if (eventData.message === RECEIVE) {
+      console.log("sending blocks:");
+      console.log(masterPeer.blocks);
       channel1.send(
-        JSON.stringify({ message: RECEIVE, blocks: peerObject1.blocks })
+        JSON.stringify({ message: RECEIVE, blocks: masterPeer.blocks })
       );
     } else if (eventData.message === UPDATE) {
       const updatedBlocks = eventData.blocks;
@@ -150,7 +159,7 @@ const addPeer = (setPeers) => {
 
     if (eventData.message === RECEIVE) {
       peerObject2.loading = false;
-      peerObject2.blocks = eventData.blocks;
+      peerObject2.blocks = getNewBlocks(eventData.blocks);
       console.log("peer added and working");
       setPeers((currPeers) => [...currPeers, peerObject2]);
     }
@@ -212,8 +221,10 @@ const changePeers = (
   newPeerObj,
   setCurrentPeer,
   setBlocks,
-  setModalIsOpen
+  setModalIsOpen,
+  blocks
 ) => {
+  currentPeerObj.blocks = blocks;
   //currentPeerObject should teel the newPeerObj that updating has been successful. Here since it's in a single page, we aren't establishing
   //another peer connection between currentPeerObj and newPeerObj. Establishing another peer connection would be required for a real blockchain
   currentPeerObj.channel.onmessage = (event) => {
@@ -222,6 +233,8 @@ const changePeers = (
       newPeerObj.getBlocks();
     } else if (eventData.message === UPDATE_FAILED) {
       setBlocks(newPeerObj.blocks);
+      console.log("failed update");
+      console.log(newPeerObj.blocks);
       setCurrentPeer(newPeerObj);
       setModalIsOpen(true);
     }
@@ -231,7 +244,9 @@ const changePeers = (
     const eventData = JSON.parse(event.data);
 
     if (eventData.message === RECEIVE) {
-      newPeerObj.blocks = eventData.blocks;
+      console.log("blocks received");
+      newPeerObj.blocks = getNewBlocks(eventData.blocks);
+      console.log(newPeerObj.blocks);
       setBlocks(newPeerObj.blocks);
       setCurrentPeer(newPeerObj);
     }
