@@ -99,7 +99,6 @@ function App() {
         ))}
       </div>
       <button onClick={() => addPeer(setPeers)}>Add Peer</button>
-      <button onClick={() => setModalIsOpen(true)}>Open Modal</button>
       <PopUp modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
       <div className="flex flex-column flex-align-center">
         <BlockChain>
