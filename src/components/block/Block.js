@@ -44,7 +44,7 @@ const Block = ({ block, updateNextBlock }) => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3001/generateBlock", {
+    fetch(`${process.env.REACT_APP_API_URI}/generateblock`, {
       method: "post",
       body: JSON.stringify({ ...block, data: data }),
       headers: {

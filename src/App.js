@@ -43,7 +43,7 @@ function App() {
   }, []);
 
   const addNewBlock = (data) => {
-    fetch("http://localhost:3001/generateValidBlock", {
+    fetch(`${process.env.REACT_APP_API_URI}/generatevalidblock`, {
       method: "post",
       body: JSON.stringify({
         data: String(data),
@@ -63,7 +63,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3001/generateValidBlock", {
+    fetch(`${process.env.REACT_APP_API_URI}/generatevalidblock`, {
       method: "post",
       body: JSON.stringify({
         data: "Welcome to SimpleChain!",
