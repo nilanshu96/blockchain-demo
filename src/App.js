@@ -93,14 +93,26 @@ function App() {
   return (
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
-      <div className="flex pa-h-5">
-        {peers.map((peer, id) => (
-          <Avatar peer={peer} key={id} changeCurrentPeer={changeCurrentPeer} />
-        ))}
+      <div className="flex flex-align-center max-width-100p">
+        <div className="flex pa-h-5 overflow-auto overflow-visible">
+          {peers.map((peer, id) => (
+            <Avatar
+              peer={peer}
+              key={id}
+              changeCurrentPeer={changeCurrentPeer}
+              focused={peer === currentPeer ? true : false}
+            />
+          ))}
+        </div>
+        <button
+          className="ml-a h-fit-content mr-4"
+          onClick={() => addPeer(setPeers)}
+        >
+          Add Peer
+        </button>
       </div>
-      <button onClick={() => addPeer(setPeers)}>Add Peer</button>
       <PopUp modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
-      <div className="flex flex-column flex-align-center">
+      <div className="flex flex-column flex-align-center mt-4">
         <BlockChain>
           {blocks.map((block) => {
             return (
