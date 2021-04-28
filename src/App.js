@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { peersInit, addPeer, changePeers } from "./util/peer-management";
@@ -16,9 +16,11 @@ function App() {
   const [peers, setPeers] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentPeer, setCurrentPeer] = useState(null);
+  const blockchain_box = useRef();
 
   const changeCurrentPeer = (newPeer) => {
     if (currentPeer !== newPeer) {
+      blockchain_box.current.classList.remove("slide-in");
       changePeers(
         currentPeer,
         newPeer,
@@ -90,6 +92,13 @@ function App() {
     return <div>Loading</div>;
   }
 
+  if (
+    blockchain_box.current &&
+    !blockchain_box.current.classList.contains("slide-in")
+  ) {
+    blockchain_box.current.classList.add("slide-in");
+  }
+
   return (
     <div>
       <h1 className="ta-center">SIMPLE CHAIN</h1>
@@ -112,7 +121,10 @@ function App() {
         </button>
       </div>
       <PopUp modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
-      <div className="flex flex-column flex-align-center mt-4">
+      <div
+        ref={blockchain_box}
+        className="flex flex-column flex-align-center mt-4 blockchain-box slide-in"
+      >
         <BlockChain>
           {blocks.map((block) => {
             return (
