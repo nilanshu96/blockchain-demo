@@ -104,7 +104,7 @@ function App() {
       <h1 className="ta-center">SIMPLE CHAIN</h1>
       <h2 className="peer-text">Peers</h2>
       <div className="flex flex-align-center max-width-100p peer-box">
-        <div className="flex overflow-auto overflow-visible">
+        <div className="flex overflow-auto pa-v-4">
           {peers.map((peer, id) => (
             <Avatar
               peer={peer}
