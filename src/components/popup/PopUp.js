@@ -9,6 +9,8 @@ const PopUp = ({ modalIsOpen, setModalIsOpen }) => {
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
+      display: "flex",
+      flexDirection: "column",
     },
   };
 
@@ -25,8 +27,12 @@ const PopUp = ({ modalIsOpen, setModalIsOpen }) => {
       style={customStyles}
       contentLabel={"failure popUp"}
     >
-      <p>Failed to reconcile the blocks as the blockchain was illegal</p>
-      <button onClick={closeModal}>Close PopUp</button>
+      <p className="f-l fc-r ta-center">
+        Failed to reconcile the blocks as the blockchain was illegal
+      </p>
+      <button className="center btn btn-bg-red padding-4" onClick={closeModal}>
+        Close
+      </button>
     </Modal>
   );
 };
