@@ -104,7 +104,7 @@ function App() {
       <h1 className="ta-center">SIMPLE CHAIN</h1>
       <h2 className="peer-text">Peers</h2>
       <div className="flex flex-align-center max-width-100p peer-box">
-        <div className="flex overflow-auto pa-v-4">
+        <div className="flex overflow-auto pa-v-4 mr-4">
           {peers.map((peer, id) => (
             <Avatar
               peer={peer}
@@ -115,7 +115,7 @@ function App() {
           ))}
         </div>
         <button
-          className="btn padding-4 ml-a h-fit-content dim"
+          className="btn padding-4 ml-a h-fit-content dim no-text-wrap min-width-fc"
           onClick={() => addPeer(setPeers)}
         >
           Add Peer
