@@ -1,11 +1,10 @@
-NOTES:
+# SIMPLECHAIN BLOCKCHAIN-DEMO
 
-1. Uses RTCPeerConnection to create Peers
-2. Create a node backend only for the crypto(for creating sha 256 hashes) operations
-3. On production the backend being used is from Amazon Lambda and Amazon Gateway
+### A really simple blockchain-demo created for [Coding Challenge 36](https://github.com/zero-to-mastery/coding_challenge-36)
 
-Current updates:
-
-1. Using RTCpeerConnection to directly create a peer
-2. created utility to manage peers in the peer branch
-3. CSS styling is pending
+## Notes:
+1. Uses RTCPeerConnection for peer management
+2. Uses ReactJs (only react hooks) for the frontend
+3. Uses a backend API for crypto operations. The github page uses API hosted on Amazong Gateway which uses Amazon lambda.
+4. Backend that can be used to test on local: https://github.com/nilanshu96/blockchain-demo-backend
+5. The blockchain reconciliation logic is kept very simple. An invalid blockchain can entirely get replaced if it's being reconciled with a valid blockchain. The reconciliation takes place automatically whenever we shift to another peer to show the peers are constantly connected with each other.
